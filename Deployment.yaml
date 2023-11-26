@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app
+  labels:
+    app: node-app
+spec:
+  selector:
+    matchLabels:
+      app: node-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+      - name: node-app
+        image: sulatnijag/node-app:latest
+        tty: true
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: "250m"
+          requests:
+            memory: 128Mi
+            cpu: "80m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app
+spec:
+  selector:
+    app: node-app
+  type: LoadBalancer #Type of the Kubernetes Service
+  ports:
+  - protocol: TCP
+    port: 80 #Service port
+    targetPort: 3000 #The port for the React.js application container
